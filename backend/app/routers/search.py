@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from ..core.embeddings import dense_search
+from ..core.search import hybrid_search
 
 router = APIRouter(prefix="/search", tags=["search"])
 
 @router.get("")
-def search(q: str, top_k: int = 10):
-    res = dense_search(q, top_k=top_k)
+def search(q: str, top_k: int = 5):
+    res = hybrid_search(q, top_k=top_k)
     return res

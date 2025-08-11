@@ -1,14 +1,12 @@
 from fastapi import APIRouter
 from ..schemas import QARequest, QAReply
-from ..core.embeddings import dense_search
-from ..core.rerank import bm25_rerank
+from ..core.search import hybrid_search
 
 router = APIRouter(prefix="/qa", tags=["qa"])
 
 @router.post("", response_model=QAReply)
 def qa(req: QARequest):
-    candidates = dense_search(req.query, top_k=30, filter_doc_ids=req.doc_ids)
-    top = bm25_rerank(req.query, candidates, top_k=req.top_k)
+    top = hybrid_search(req.query, top_k=req.top_k, filter_doc_ids=req.doc_ids)
 
     # Basit cevap: ilk chunklardan derleyelim (demo)
     answer = (

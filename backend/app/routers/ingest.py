@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from ..core.store import save_upload
+from ..core.store import save_upload, register_doc
 from ..core.ocr import run_ocr
 from ..core.layout import extract_pages
 from ..core.chunking import make_chunks
@@ -22,6 +22,7 @@ async def ingest(pdf: UploadFile = File(...), ocr: bool = True):
         except Exception:
             pass  # taranmış değilse sorun çıkmadan devam et
 
+    register_doc(doc_id, path)
     pages = extract_pages(path)
     chunks = make_chunks(doc_id, pages)
     upsert_chunks(chunks)

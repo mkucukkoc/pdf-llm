@@ -1,6 +1,7 @@
 from sentence_transformers import SentenceTransformer
 from qdrant_client import QdrantClient, models
 from .settings import settings
+from .bm25_index import add_chunks
 import numpy as np
 
 _embedder = None
@@ -43,6 +44,7 @@ def upsert_chunks(chunks: list[dict]):
             payload=c
         ))
     qdr.upsert(collection_name=settings.qdrant_collection, points=points)
+    add_chunks(chunks)
 
 
 def dense_search(query: str, top_k: int = 20, filter_doc_ids: list[str] | None = None):
